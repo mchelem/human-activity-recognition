@@ -1,5 +1,7 @@
 #!/usr/bin/env Rscript
 
+library(data.table)
+
 read.activities <- function() {
 	activities = read.table("UCI HAR Dataset/activity_labels.txt", colClasses=c("numeric", "character"))
 	names(activities) <- c("id","activity")
@@ -22,6 +24,12 @@ read.features <- function() {
 	features
 }
 
+read.subject <- function(type) {
+	subject <- read.table(paste("UCI HAR Dataset/", type ,"/subject_", type, ".txt", sep=""))
+	names(subject) <- c("subject")
+	subject
+}
+
 
 read.y <- function(type) {
 	y <- read.table(paste("UCI HAR Dataset/", type ,"/y_", type, ".txt", sep=""))
@@ -42,10 +50,12 @@ read.X <- function(type) {
 
 
 message("Preparing data set. This may take a while...")
-train.dataset <- cbind(read.y("train"), read.X("train"))
-test.dataset <- cbind(read.y("test"), read.X("test"))
+train.dataset <- cbind(read.subject("train"), read.y("train"), read.X("train"))
+test.dataset <- cbind(read.subject("test"), read.y("test"), read.X("test"))
 dataset <- rbind(train.dataset, test.dataset)
+DT <- data.table(dataset)
+dataset <- DT[,lapply(.SD,mean),by=c("subject,activity"]
 
-output.file <- "human-activity-recongnition-mean-std.txt"
+output.file <- "subject-activity-means.txt"
 write.table(dataset, output.file)
 message(paste("Finished. Result saved to", output.file, "."))
