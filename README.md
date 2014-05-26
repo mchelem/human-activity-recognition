@@ -20,4 +20,4 @@ In order to run it in a linux/MacOS environment you can issue:
 
 ## Variable description
 
-See the code book for more information
+See the [code book](https://github.com/mchelem/human-activity-recognition/blob/master/codebook.md) for more information.
